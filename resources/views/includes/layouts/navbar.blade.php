@@ -15,8 +15,13 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url('/') }}">{{ __('Home') }}</a>
+                    <a class="nav-link @if(Route::is('guest.home')) active @endif" href="{{url('/') }}">{{ __('Home') }}</a>
                 </li>
+                @auth
+                <li class="nav-item">
+                    <a class="nav-link @if(Request::is('admin/projects*')) active @endif" href="{{route('admin.projects.index') }}">projects</a>
+                </li>
+                @endauth
             </ul>
 
             <!-- Right Side Of Navbar -->
