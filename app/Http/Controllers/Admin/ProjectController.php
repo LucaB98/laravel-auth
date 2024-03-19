@@ -13,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::orderByDesc('updated_at')->orderByDesc('created_at')->get();
+        $projects = Project::orderByDesc('updated_at')->orderByDesc('created_at')->paginate(10);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -62,6 +62,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Project eliminato con successo');
     }
 }
