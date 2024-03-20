@@ -19,7 +19,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         {{$project->title}}
         <div>
-            <a href="{{route('guest.projects.show', $project)}}" class="btn btn-sm btn-primary">
+            <a href="{{route('guest.projects.show', $project->slug)}}" class="btn btn-sm btn-primary">
                 <i class="fas fa-eye"></i></a>
         </div>
     </div>
