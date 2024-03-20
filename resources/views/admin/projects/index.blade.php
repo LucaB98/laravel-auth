@@ -4,8 +4,20 @@
 
 @section('content')
 
-<header>
+<header class="d-flex justify-content-between align-items-center">
     <h1>Projects</h1>
+
+    <form action="{{route('admin.projects.index')}}" method="GET">
+      <div class="input-group">
+        <select class="form-select" id="filter" name="filter">
+          <option value="">Tutti</option>
+          <option value="published"  @if ($filter === 'published') selected @endif>Pubblicato</option>
+          <option value="drafts" @if ($filter === 'drafts') selected @endif>Bozze</option>
+        </select>
+        <button class="btn btn-outline-secondary">Filtra</button>
+      </div>
+    </form>
+
 </header>
 
 <table class="table table-dark table-hover">
@@ -14,6 +26,7 @@
           <th scope="col">#</th>
           <th scope="col">Titolo</th>
           <th scope="col">Slug</th>
+          <th scope="col">Stato</th>
           <th scope="col">Creato il</th>
           <th scope="col">Ultima Modifica</th>
           <th></th>
@@ -25,8 +38,9 @@
           <th scope="row">{{$project->id}}</th>
           <td>{{$project->title}}</td>
           <td>{{$project->slug}}</td>
-          <td>{{$project->created_at}}</td>
-          <td>{{$project->updated_at}}</td>
+          <td>{{$project->is_published ? 'Pubblicato' : 'Bozza'}}</td>
+          <td>{{$project->getFormatedDate('created_at')}}</td>
+          <td>{{$project->getFormatedDate('updated_at')}}</td>
           <td>
             <div class="d-flex justify-content-end gap-2">
                 <a href="{{route('admin.projects.show', $project)}}" class="btn btn-sm btn-primary">
@@ -44,7 +58,7 @@
             
         @empty
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <h3 class="text-center">Non ci sono progetti</h3>
                 </td>
             </tr>

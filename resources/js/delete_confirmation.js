@@ -1,5 +1,5 @@
 const deleteForms = document.querySelectorAll('.delete-form');
-deleteForms.forEach(form => {
+deleteForms.foreach(form => {
     form.addEventListener('submit', e => {
         e.preventDefault();
 
