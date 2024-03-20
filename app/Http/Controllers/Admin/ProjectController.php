@@ -43,7 +43,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|min:5|max:50|unique:project',
+            'title' => 'required|string|min:5|max:50|unique:projects',
             'content' => 'required|string',
             'image' => 'nullable|url',
             'is_published' => 'nullable|boolean',
