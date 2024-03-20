@@ -1,27 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'home')
+@section('title', 'project')
 @section('content')
 
-<header>
-    <h1>Boolfolio</h1>
-    <h3>i miei progetti</h3>
-    @if($projects->hasPages())
-    {{$projects->links()}}
-@endif 
-</header>
+
 
 <hr>
 
-@forelse($projects as $project)
+
 
 <div class="card my-5">
     <div class="card-header d-flex justify-content-between align-items-center">
         {{$project->title}}
-        <div>
-            <a href="{{route('guest.projects.show', $project)}}" class="btn btn-sm btn-primary">
-                <i class="fas fa-eye"></i></a>
-        </div>
+    
     </div>
     <div class="card-body">
         <div class="row">
@@ -40,7 +31,5 @@
       
     </div>
   </div>
-@empty
-    
-@endforelse
+
 @endsection

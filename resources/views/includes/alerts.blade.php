@@ -1,4 +1,4 @@
-
+{{-- alert per flash messages --}}
 @session('message')
 <div class="alert alert-{{session('type', 'info')}} alert-dismissible fade show" role="alert">
     {{$value}}
@@ -6,9 +6,11 @@
   </div>
 @endsession
 
+
+
+{{-- alert per gli errori --}}
 @if ($errors->any())
     
-@endif
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
   <ul>
     @foreach($errors->all() as $error)

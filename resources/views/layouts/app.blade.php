@@ -33,11 +33,12 @@
 <body>
     <div id="app">
 
-
+        {{-- navbar --}}
         @include('includes.layouts.navbar')
 
         <main class="container py-3">
-            @include('includes.alert')
+            {{-- alerts --}}
+            @include('includes.alerts')
             @yield('content')
         </main>
     </div>
