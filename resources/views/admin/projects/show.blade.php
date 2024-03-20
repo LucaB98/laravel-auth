@@ -14,8 +14,8 @@
     @endif
     <p>{{$project->content}}</p>
     <div>
-        <strong>Creato il:</strong> {{$project->created_at}}
-        <strong>Ultima modifica:</strong> {{$project->updated_at}}
+        <strong>Creato il:</strong> {{$project->getFormatedDate('created_at', 'd-m-y H:i:s')}}
+        <strong>Ultima modifica:</strong> {{$project->getFormatedDate('updated_at')}}
     </div>
 </div>
     <hr>

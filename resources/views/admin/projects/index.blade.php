@@ -29,7 +29,12 @@
           <th scope="col">Stato</th>
           <th scope="col">Creato il</th>
           <th scope="col">Ultima Modifica</th>
-          <th></th>
+          <th>
+            <div class="d-flex justify-content-end">
+
+              <a href="{{route('admin.projects.create')}}" class="btn btn-success"><i class="fas fa-plus me-2"></i>Nuovo</a>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -39,7 +44,7 @@
           <td>{{$project->title}}</td>
           <td>{{$project->slug}}</td>
           <td>{{$project->is_published ? 'Pubblicato' : 'Bozza'}}</td>
-          <td>{{$project->getFormatedDate('created_at')}}</td>
+          <td>{{$project->getFormatedDate('created_at', 'd-m-y H:i:s')}}</td>
           <td>{{$project->getFormatedDate('updated_at')}}</td>
           <td>
             <div class="d-flex justify-content-end gap-2">
