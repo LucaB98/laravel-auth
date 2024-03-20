@@ -33,7 +33,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $project = new Project();
+        return view('admin.projects.create', compact('project'));
     }
 
     /**
@@ -41,6 +42,22 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|string|min:5|max:50|unique:project',
+            'content' => 'required|string',
+            'image' => 'nullable|url',
+            'is_published' => 'nullable|boolean',
+        ],
+        [
+            'title.required' => 'il titolo è obbligatorio',
+            'title.min' => 'il titolo deve essere almeno di :min caratteri',
+            'title.max' => 'il titolo deve essere massimo di :max caratteri',
+            'title.unique' => 'il titolo esiste già',
+            'content.required' => 'il contenuto è obbligatorio',
+            'image.url' => 'url inserito non è corretto',
+            'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
+
+        ]);
          $data = $request->all();
          $project = new Project();
          $project->fill($data);
@@ -64,7 +81,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'))
+        return view('admin.projects.edit', compact('project'));
     }
 
     /**
@@ -72,7 +89,29 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $request->validate([
+            'title' => ['required','string','min:5','max:50',Rule::unique('projects')->ignore($project->id)],
+            'content' => 'required|string',
+            'image' => 'nullable|url',
+            'is_published' => 'nullable|boolean',
+        ],
+        [
+            'title.required' => 'il titolo è obbligatorio',
+            'title.min' => 'il titolo deve essere almeno di :min caratteri',
+            'title.max' => 'il titolo deve essere massimo di :max caratteri',
+            'title.unique' => 'il titolo esiste già',
+            'content.required' => 'il contenuto è obbligatorio',
+            'image.url' => 'url inserito non è corretto',
+            'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
+
+        ]);
+        $data = $request->all();
+        
+        $data['slug'] = Str::slug($data['title']);
+        $data['is_published'] = Arr::exists($data, 'is_published');
+        $project->update($data);
+
+        return to_route('admin.projects.show', $project)->with('message', 'Progetto modificato con successo')->with('type', 'success');
     }
 
     /**

@@ -51,10 +51,10 @@
                 <a href="{{route('admin.projects.show', $project)}}" class="btn btn-sm btn-primary">
                 <i class="fas fa-eye"></i></a>
                 <a href="{{route('admin.projects.edit', $project)}}" class="btn btn-warning btn-sm"> <i class="fas fa-pencil"></i></a>
-                <form action="{{route('admin.projects.destroy', $project->id)}}" method="POST">
+                <form action="{{route('admin.projects.destroy', $project->id)}}" method="POST" class="delete-form" >
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-can"></i></button>
+                    <button type="submit" class="btn btn-danger btn-sm "><i class="fas fa-trash-can "></i></button>
                 </form>
             </div>
           </td>
