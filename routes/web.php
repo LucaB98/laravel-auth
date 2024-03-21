@@ -26,6 +26,13 @@ Route::get('/projects/{slug}', [GuestProjectController::class, 'show'])->name('g
 Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function(){
     
     Route::get('', AdminHomeController::class)->name('home');
+
+    Route::get('/projects/trash', [AdminProjectController::class, 'trash'])->name('projects.trash');
+    Route::patch('/projects/{project}/restore', [AdminProjectController::class, 'restore'])->name('projects.restore')->withTrashed();
+    Route::patch('/projects/{project}/drop', [AdminProjectController::class, 'drop'])->name('projects.drop')->withTrashed();
+
+    
+
     Route::resource('projects', AdminProjectController::class);
 });
 

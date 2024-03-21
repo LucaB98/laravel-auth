@@ -43,6 +43,9 @@
         </main>
     </div>
 
+    @include('includes.toast')
+
+
     @yield('scripts')
 </body>
 

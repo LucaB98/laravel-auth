@@ -12,6 +12,7 @@
 @endsection
 
 @section('scripts')
+ @vite('resources/js/create_slug.js')
  @vite('resources/js/preview.js')
 @endsection
 

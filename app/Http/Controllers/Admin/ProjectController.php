@@ -120,6 +120,35 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Project eliminato con successo');
+        return to_route('admin.projects.index')
+        ->with('toast-button-type', 'success')
+        ->with('toast-message', 'Project eliminato con successo')
+        ->with('toast-label', Config('app.name'))
+        ->with('toast-method', 'PATCH')
+        ->with('toast-route', route('admin.projects.restore', $project->id))
+        ->with('toast-button-label', 'Annulla');
+
     }
+
+    // rotte soft delete
+
+    public function trash()
+    {
+        $projects = Project::onlyTrashed()->get();
+        return view('admin.projects.trash', compact('projects'));
+    }
+
+    public function restore(Project $project)
+    {
+       $project->restore();
+       return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Progetto ripristinato con successo');
+    }
+
+    public function drop(Project $project)
+    {
+        $project->torceDelete();
+        return to_route('admin.projects.trash')->with('type', 'danger')->with('message', 'Progetto eliminato definitamente con successo');
+    }
+    
+
 }
