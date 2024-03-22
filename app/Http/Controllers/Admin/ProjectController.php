@@ -7,6 +7,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+
 
 class ProjectController extends Controller
 {
@@ -19,7 +23,7 @@ class ProjectController extends Controller
 
         $query = Project::orderByDesc('updated_at')->orderByDesc('created_at');
 
-        if($filter){
+        if ($filter) {
             $value = $filter === 'published';
             $query->whereIsPublished($value);
         }
@@ -42,30 +46,38 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|min:5|max:50|unique:projects',
-            'content' => 'required|string',
-            'image' => 'nullable|url',
-            'is_published' => 'nullable|boolean',
-        ],
-        [
-            'title.required' => 'il titolo è obbligatorio',
-            'title.min' => 'il titolo deve essere almeno di :min caratteri',
-            'title.max' => 'il titolo deve essere massimo di :max caratteri',
-            'title.unique' => 'il titolo esiste già',
-            'content.required' => 'il contenuto è obbligatorio',
-            'image.url' => 'url inserito non è corretto',
-            'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
+        $request->validate(
+            [
+                'title' => 'required|string|min:5|max:50|unique:projects',
+                'content' => 'required|string',
+                'image' => 'nullable|image|mimes:png,jpg,jpeg',
+                'is_published' => 'nullable|boolean',
+            ],
+            [
+                'title.required' => 'il titolo è obbligatorio',
+                'title.min' => 'il titolo deve essere almeno di :min caratteri',
+                'title.max' => 'il titolo deve essere massimo di :max caratteri',
+                'title.unique' => 'il titolo esiste già',
+                'content.required' => 'il contenuto è obbligatorio',
+                'image.image' => 'il file inserito non è corretto',
+                'image.mimes' => 'il file deve essere .png, .jpg, .jpeg',
+                'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
 
-        ]);
-         $data = $request->all();
-         $project = new Project();
-         $project->fill($data);
-         $project->slug = Str::slug($project->title);
-         $project->is_published = Arr::exists($data, 'is_published');
+            ]
+        );
+        $data = $request->all();
+        $project = new Project();
+        $project->fill($data);
+        $project->slug = Str::slug($project->title);
+        $project->is_published = Arr::exists($data, 'is_published');
 
-         $project->save();
-         return to_route('admin.projects.show', $project)->with('message', 'Progetto creato con successo')->with('type', 'success');
+        if (Arr::exists($data, 'image')) {
+            $img_url = Storage::putFile('projects', $data['image']);
+            $project->image = $img_url;
+        }
+
+        $project->save();
+        return to_route('admin.projects.show', $project)->with('message', 'Progetto creato con successo')->with('type', 'success');
     }
 
     /**
@@ -89,24 +101,27 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $request->validate([
-            'title' => ['required','string','min:5','max:50',Rule::unique('projects')->ignore($project->id)],
-            'content' => 'required|string',
-            'image' => 'nullable|url',
-            'is_published' => 'nullable|boolean',
-        ],
-        [
-            'title.required' => 'il titolo è obbligatorio',
-            'title.min' => 'il titolo deve essere almeno di :min caratteri',
-            'title.max' => 'il titolo deve essere massimo di :max caratteri',
-            'title.unique' => 'il titolo esiste già',
-            'content.required' => 'il contenuto è obbligatorio',
-            'image.url' => 'url inserito non è corretto',
-            'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
+        $request->validate(
+            [
+                'title' => ['required', 'string', 'min:5', 'max:50', Rule::unique('projects')->ignore($project->id)],
+                'content' => 'required|string',
+                'image' => 'nullable|image|mimes:png,jpg,jpeg',
+                'is_published' => 'nullable|boolean',
+            ],
+            [
+                'title.required' => 'il titolo è obbligatorio',
+                'title.min' => 'il titolo deve essere almeno di :min caratteri',
+                'title.max' => 'il titolo deve essere massimo di :max caratteri',
+                'title.unique' => 'il titolo esiste già',
+                'content.required' => 'il contenuto è obbligatorio',
+                'image.image' => 'il file inserito non è corretto',
+                'image.mimes' => 'il file deve essere .png, .jpg, .jpeg',
+                'is_published.boolean' => 'il valore del campo pubblicazione non è valido',
 
-        ]);
+            ]
+        );
         $data = $request->all();
-        
+
         $data['slug'] = Str::slug($data['title']);
         $data['is_published'] = Arr::exists($data, 'is_published');
         $project->update($data);
@@ -121,13 +136,12 @@ class ProjectController extends Controller
     {
         $project->delete();
         return to_route('admin.projects.index')
-        ->with('toast-button-type', 'success')
-        ->with('toast-message', 'Project eliminato con successo')
-        ->with('toast-label', Config('app.name'))
-        ->with('toast-method', 'PATCH')
-        ->with('toast-route', route('admin.projects.restore', $project->id))
-        ->with('toast-button-label', 'Annulla');
-
+            ->with('toast-button-type', 'success')
+            ->with('toast-message', 'Project eliminato con successo')
+            ->with('toast-label', Config('app.name'))
+            ->with('toast-method', 'PATCH')
+            ->with('toast-route', route('admin.projects.restore', $project->id))
+            ->with('toast-button-label', 'Annulla');
     }
 
     // rotte soft delete
@@ -140,8 +154,8 @@ class ProjectController extends Controller
 
     public function restore(Project $project)
     {
-       $project->restore();
-       return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Progetto ripristinato con successo');
+        $project->restore();
+        return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Progetto ripristinato con successo');
     }
 
     public function drop(Project $project)
@@ -149,6 +163,4 @@ class ProjectController extends Controller
         $project->torceDelete();
         return to_route('admin.projects.trash')->with('type', 'danger')->with('message', 'Progetto eliminato definitamente con successo');
     }
-    
-
 }

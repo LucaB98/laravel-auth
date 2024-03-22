@@ -10,7 +10,7 @@
 <hr>
 <div class="clearfix">
     @if ($project->image) 
-    <img src="{{$project->image}}" alt="{{$project->title}}" class="me-2 float-start">
+    <img src="{{ asset($project->image) }}" alt="{{$project->title}}" class="me-2 float-start">
     @endif
     <p>{{$project->content}}</p>
     <div>

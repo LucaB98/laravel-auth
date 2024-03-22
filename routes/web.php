@@ -5,6 +5,7 @@ use App\Http\Controllers\Guest\HomeController as GuestHomeController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Guest\ProjectController as GuestProjectController;
 
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,19 +20,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', GuestHomeController::class) ->name('guest.home');
+Route::get('/', GuestHomeController::class)->name('guest.home');
 Route::get('/projects/{slug}', [GuestProjectController::class, 'show'])->name('guest.projects.show');
 
 
-Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function(){
-    
+Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function () {
+
     Route::get('', AdminHomeController::class)->name('home');
 
     Route::get('/projects/trash', [AdminProjectController::class, 'trash'])->name('projects.trash');
     Route::patch('/projects/{project}/restore', [AdminProjectController::class, 'restore'])->name('projects.restore')->withTrashed();
     Route::patch('/projects/{project}/drop', [AdminProjectController::class, 'drop'])->name('projects.drop')->withTrashed();
 
-    
+
 
     Route::resource('projects', AdminProjectController::class);
 });
@@ -42,4 +43,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
