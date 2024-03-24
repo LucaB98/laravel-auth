@@ -12,7 +12,8 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/delete_confirmation.js',
                 'resources/js/preview.js',
-                'resources/js/create_slug.js'
+                'resources/js/create_slug.js',
+                'resources/js/toggle_publication.js'
             ],
             refresh: true,
         }),

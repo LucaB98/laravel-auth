@@ -47,7 +47,17 @@
         <div class="col-11">
             <div class="mb-3">
                 <label for="image" class="form-label">Immagine</label>
-                <input type="file" class="form-control @error('image') is-invalid @elseif(old('image', '')) is-valid @enderror" id="image" name="image" placeholder="http:..." value="{{old('image', $project->image)}}">
+
+                <div class="input-group @if(!$project->image) d-none @endif" id="previous-image-field">
+                    <button class="btn btn-outline-secondary" type="button" id="change-image-button">Cambia immagine</button>
+                    <input type="text" class="form-control" value="{{old('image', $project->image)}}" disabled>
+                </div>
+
+
+                <input type="file" class="form-control @if($project->image) d-none @endif @error('image') is-invalid @elseif(old('image', '')) is-valid @enderror" id="image" name="image" placeholder="http:...">
+
+
+
                 @error('image')
                 <div class="invalid-feedback">{{$message}}</div>
                 @else
@@ -57,7 +67,7 @@
         </div>
         <div class="col-1">
             <div class="mb-3">
-                <img src="{{ old( 'image', $project->image ?? 'https://marcolanci.it/boolean/assets/placeholder.png')}}" class="img-fluid" alt="img" id="preview">
+                <img src="{{ old( 'image', $project->image) ? $project->printImage() : 'https://marcolanci.it/boolean/assets/placeholder.png'}}" class="img-fluid" alt="img" id="preview">
             </div>
         </div>
         <div class="col-12 d-flex justify-content-end">

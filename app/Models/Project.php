@@ -18,4 +18,9 @@ class Project extends Model
     {
         return Carbon::create($this->date)->format($format);
     }
+
+    public function printImage()
+    {
+        return asset('storage/' . $this->image);
+    }
 }

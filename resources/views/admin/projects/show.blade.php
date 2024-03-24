@@ -10,7 +10,7 @@
 <hr>
 <div class="clearfix">
     @if ($project->image) 
-    <img src="{{ asset($project->image) }}" alt="{{$project->title}}" class="me-2 float-start">
+    <img src="{{ $project->printImage() }}" alt="{{$project->title}}" class="me-2 float-start">
     @endif
     <p>{{$project->content}}</p>
     <div>
@@ -23,7 +23,7 @@
     <a href="{{route('admin.projects.index')}}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Torna indietro</a>
     <div class="d-flex justify-content-between gap-2">
         <a href="{{route('admin.projects.edit', $project)}}" class="btn btn-warning"> <i class="fas fa-pencil me-2"></i>Modifica</a>
-        <form action="{{route('admin.projects.destroy', $project->id)}}" method="POST" class="delete-form">
+        <form action="{{route('admin.projects.destroy', $project->id)}}" method="POST" class="delete-form" data-bs-toggle="modal" data-bs-target="#modal">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger"><i class="fas fa-trash-can me-2"></i>Elimina</button>

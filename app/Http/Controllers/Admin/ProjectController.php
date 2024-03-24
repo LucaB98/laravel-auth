@@ -72,7 +72,10 @@ class ProjectController extends Controller
         $project->is_published = Arr::exists($data, 'is_published');
 
         if (Arr::exists($data, 'image')) {
-            $img_url = Storage::putFile('projects', $data['image']);
+
+            $extension = $data['image']->extension();
+
+            $img_url = Storage::putFileAs('projects', $data['image'], "$project->slug.$extension");
             $project->image = $img_url;
         }
 
@@ -124,6 +127,15 @@ class ProjectController extends Controller
 
         $data['slug'] = Str::slug($data['title']);
         $data['is_published'] = Arr::exists($data, 'is_published');
+        if (Arr::exists($data, 'image')) {
+
+            if ($project->image) Storage::delete($project->image);
+
+            $extension = $data['image']->extension();
+
+            $img_url = Storage::putFileAs('projects', $data['image'], "{$data['slug']}.$extension");
+            $project->image = $img_url;
+        }
         $project->update($data);
 
         return to_route('admin.projects.show', $project)->with('message', 'Progetto modificato con successo')->with('type', 'success');
@@ -134,6 +146,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+
         $project->delete();
         return to_route('admin.projects.index')
             ->with('toast-button-type', 'success')
@@ -160,7 +173,19 @@ class ProjectController extends Controller
 
     public function drop(Project $project)
     {
+        if ($project->image) Storage::delete($project->image);
         $project->torceDelete();
         return to_route('admin.projects.trash')->with('type', 'danger')->with('message', 'Progetto eliminato definitamente con successo');
+    }
+
+    public function togglePublication(Project $project)
+    {
+        $project->is_published = !$project->is_published;
+        $project->save();
+
+        $action = $project->is_published ? 'pubblicato' : 'salvato come bozza';
+        $type = $project->is_published ? 'success' : 'info';
+
+        return back()->with('message', "Il progetto $project->title è stato $action")->with('type', $type);
     }
 }
